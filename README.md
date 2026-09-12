@@ -114,7 +114,7 @@ The position matching uses a **k-Nearest Neighbors (k-NN)** algorithm comparing 
 ### Installation
 
 ```bash
-git clone https://github.com/your-username/indoor-nav.git
+git clone https://github.com/Esko1m/Mini-project-pathly.git
 cd indoor-nav
 npm install
 npx expo prebuild
