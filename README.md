@@ -54,14 +54,15 @@ The position matching uses a **k-Nearest Neighbors (k-NN)** algorithm comparing 
 
 | Layer | Technology |
 |---|---|
-| Framework | Expo (Bare Workflow) |
+| Framework | Expo SDK 58 (prebuild / bare Android) |
 | Language | TypeScript |
+| Navigation | Expo Router + Zustand |
 | WiFi Scanning | `react-native-wifi-reborn` |
-| Audio | `expo-speech` |
+| Audio | `expo-speech` + `expo-speech-recognition` |
 | Haptics | `expo-haptics` |
-| Storage | `AsyncStorage` + `expo-file-system` |
-| Export | `expo-sharing` |
-| Sensors | `expo-sensors` (accelerometer dead-reckoning) |
+| Storage | `expo-sqlite` + Supabase Postgres |
+| Sensors | `expo-sensors` (accelerometer + magnetometer dead-reckoning) |
+| Map rendering | `react-native-svg` |
 
 ---
 
@@ -79,25 +80,20 @@ The position matching uses a **k-Nearest Neighbors (k-NN)** algorithm comparing 
 ## Project Structure
 
 ```
-/indoor-nav
-  /src
-    /screens
-      HomeScreen.tsx          ← room setup and corner labeling
-      CaptureScreen.tsx       ← active WiFi scanning UI
-      ReviewScreen.tsx        ← view and manage fingerprints
-    /modules
-      wifiScanner.ts          ← WiFi scan + RSSI averaging
-      fingerprintStore.ts     ← save / load / export fingerprint DB
-      audioGuide.ts           ← TTS navigation wrapper
-    /types
-      fingerprint.ts          ← TypeScript type definitions
-    /utils
-      rssiProcessor.ts        ← signal averaging, outlier removal
-      knn.ts                  ← k-NN position matching engine
-  /data
-    fingerprints.json         ← local fingerprint database
-  wifi.md                     ← full architecture document
-  README.md
+/app
+  /(onboarding)               ← welcome and permission setup
+  /(navigation)               ← home, building picker, destination, navigation, settings
+  /(surveyor)                 ← building/floor picker, fingerprint capture, upload review
+/components                   ← FloorMap, voice button, instruction banner
+/lib/api                      ← Supabase building/map/fingerprint APIs
+/lib/navigation               ← pathfinding, instructions, dead reckoning, POI matching
+/lib/speech                   ← TTS queue and speech-recognition input
+/lib/storage                  ← SQLite map/cache, survey drafts, app state
+/lib/wifi                     ← WiFi scanning and BLE helpers
+/store                        ← Zustand building/navigation/settings/survey stores
+/supabase/migrations          ← database schema and demo seed SQL
+/android                      ← native Android project (uses local config)
+/.github/workflows/android.yml ← CI APK build
 ```
 
 ---
@@ -106,7 +102,7 @@ The position matching uses a **k-Nearest Neighbors (k-NN)** algorithm comparing 
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 20+
 - Expo CLI
 - Android device or emulator (API 26+)
 - Location services enabled on device
@@ -114,12 +110,21 @@ The position matching uses a **k-Nearest Neighbors (k-NN)** algorithm comparing 
 ### Installation
 
 ```bash
-git clone https://github.com/Esko1m/Mini-project-pathly.git
-cd indoor-nav
+git clone https://github.com/Esko1m/Mini-project-disha.git
+cd Mini-project-disha
 npm install
-npx expo prebuild
 npx expo run:android
 ```
+
+### Database setup
+
+Apply the files in `supabase/migrations` with the Supabase SQL Editor (run `001_initial_schema.sql`, then `002_demo_data_and_policies.sql`). Without the schema the app still runs with the built-in demo buildings and local map cache.
+
+### Automated APK build
+
+Every push to `main` runs `.github/workflows/android.yml`. Open the **Actions** tab, select the latest **Build Android APK** run, and download the `Disha-release-apk` artifact.
+
+The CI APK is a release build signed with the project's debug keystore for testing. Use a production keystore or EAS for store distribution.
 
 ### Android Permissions
 
