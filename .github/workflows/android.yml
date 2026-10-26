@@ -47,18 +47,32 @@ jobs:
           java-version: 17
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          packages: "tools platform-tools ndk;27.1.12297006 cmake;3.22.1"
-          accept-android-sdk-licenses: true
+        run: |
+          set -e
+          export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          command -v sdkmanager
+          sdkmanager --version
+          yes | sdkmanager --licenses >/dev/null || true
+          if ! sdkmanager "ndk;27.1.12297006" "cmake;3.22.1" >/tmp/sdk.log 2>&1; then
+            msg=$(tail -n 30 /tmp/sdk.log | tr '\n' ' ')
+            echo "::error::Android SDK package install failed: $msg"
+            exit 1
+          fi
+          ls "$ANDROID_HOME/ndk"
 
       - name: Build APK
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease --no-daemon \
+          if ! ./gradlew assembleRelease --no-daemon \
             -Pandroid.enableMinifyInReleaseBuilds=false \
-            -Pandroid.enableShrinkResourcesInReleaseBuilds=false
+            -Pandroid.enableShrinkResourcesInReleaseBuilds=false >/tmp/gradle.log 2>&1; then
+            echo "::error::Gradle build failed: $(tail -n 50 /tmp/gradle.log | tr '\n' ' ')"
+            tail -n 200 /tmp/gradle.log
+            exit 1
+          fi
+          tail -n 30 /tmp/gradle.log
 
       - name: Prepare artifact
         run: |
