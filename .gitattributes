@@ -1,0 +1,8 @@
+* text=auto
+*.pbxproj -text
+android/gradlew text eol=lf
+android/gradlew.bat text eol=crlf
+*.sh text eol=lf
+*.keystore binary
+*.jar binary
+*.png binary

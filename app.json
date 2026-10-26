@@ -1,0 +1,64 @@
+{
+  "expo": {
+    "name": "Disha",
+    "slug": "wifi-nav",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "disha",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.wifinav",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "Disha uses the microphone so you can speak your destination.",
+        "NSSpeechRecognitionUsageDescription": "Disha uses speech recognition to understand voice commands.",
+        "NSLocationWhenInUseUsageDescription": "Disha uses your location to detect which building you are in and to scan WiFi networks.",
+        "NSBluetoothAlwaysUsageDescription": "Disha uses Bluetooth beacons to improve indoor positioning where WiFi scanning is restricted."
+      }
+    },
+    "android": {
+      "package": "com.wifinav",
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.ACCESS_WIFI_STATE",
+        "android.permission.CHANGE_WIFI_STATE",
+        "android.permission.CHANGE_NETWORK_STATE",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.NEARBY_WIFI_DEVICES",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.VIBRATE",
+        "android.permission.WAKE_LOCK"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-sqlite",
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Disha uses the microphone so you can speak your destination.",
+          "speechRecognitionPermission": "Disha uses speech recognition to understand voice commands."
+        }
+      ]
+    ],
+    "extra": {
+      "apiBaseUrl": "http://10.0.2.2:8000",
+      "supabaseUrl": "https://lxxjwdklshldjlgcsqwr.supabase.co",
+      "supabasePublishableKey": "sb_publishable_xAhcz4fc5FMYoeMU5NC5eQ_fy3hXTDJ",
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "760e8408-865d-49f1-8bab-0c8fcc235444"
+      }
+    },
+    "owner": "esko1m"
+  }
+}
