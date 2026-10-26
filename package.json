@@ -37,6 +37,7 @@
     ]
   },
   "scripts": {
+    "postinstall": "node scripts/patch-wifi-reborn.js",
     "start": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
